@@ -86,3 +86,5 @@ dmypy.json
 cython_debug/
 .idea/
 questions.py
+\migrations
+.flake8
