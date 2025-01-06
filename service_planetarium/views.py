@@ -59,7 +59,7 @@ class AstronomyShowViewSet(
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = AstronomyShow.objects.prefetch_related("show_themes")
+    queryset = AstronomyShow.objects.prefetch_related("show_theme")
     serializer_class = AstronomyShowSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
@@ -121,7 +121,8 @@ class AstronomyShowViewSet(
             OpenApiParameter(
                 "title",
                 type=OpenApiTypes.STR,
-                description="Filter by astronomy show title (ex. ?title=fiction)",
+                description="Filter by astronomy "
+                            "show title (ex. ?title=fiction)",
             ),
         ]
     )
@@ -135,8 +136,9 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
         .select_related("astronomy_show", "planetarium_dome")
         .annotate(
             tickets_available=(
-                    F("planetarium_dome__rows") * F("planetarium_dome__seats_in_row")
-                    - Count("tickets")
+                F("planetarium_dome__rows")
+                * F("planetarium_dome__seats_in_row")
+                - Count("tickets")
             )
         )
     )
@@ -172,14 +174,15 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "astronomy_show",
                 type=OpenApiTypes.INT,
-                description="Filter by astronomy show id (ex. ?astronomy_show=2)",
+                description="Filter by astronomy"
+                            "show id (ex. ?astronomy_show=2)",
             ),
             OpenApiParameter(
                 "date",
                 type=OpenApiTypes.DATE,
                 description=(
-                        "Filter by datetime of ShowSession "
-                        "(ex. ?date=2022-10-23)"
+                    "Filter by datetime of ShowSession "
+                    "(ex. ?date=2022-10-23)"
                 ),
             ),
         ]
@@ -199,7 +202,8 @@ class ReservationViewSet(
     GenericViewSet,
 ):
     queryset = Reservation.objects.prefetch_related(
-        "tickets__show_session__astronomy_show", "tickets__show_session__planetarium_dome"
+        "tickets__show_session__astronomy_show",
+        "tickets__show_session__planetarium_dome"
     )
     serializer_class = ReservationSerializer
     pagination_class = ReservationPagination

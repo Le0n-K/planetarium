@@ -30,7 +30,6 @@ class ShowTheme(models.Model):
 def astronomy_show_image_file_path(instance, filename):
     _, extension = os.path.splitext(filename)
     filename = f"{slugify(instance.title)}-{uuid.uuid4()}{extension}"
-
     return os.path.join("uploads/astronomy-shows/", filename)
 
 
@@ -38,7 +37,7 @@ class AstronomyShow(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     show_theme = models.ManyToManyField(
-        ShowTheme, blank=True, related_name="astronomy_shows"
+        ShowTheme, related_name="astronomy_shows"
     )
     image = models.ImageField(
         null=True, upload_to=astronomy_show_image_file_path
@@ -94,7 +93,9 @@ class Ticket(models.Model):
 
     @staticmethod
     def validate_ticket(row, seat, planetarium_dome, error_to_raise):
-        for ticket_attr_value, ticket_attr_name, planetarium_dome_attr_name in [
+        for (ticket_attr_value,
+             ticket_attr_name,
+             planetarium_dome_attr_name) in [
             (row, "row", "rows"),
             (seat, "seat", "seats_in_row"),
         ]:
@@ -102,10 +103,11 @@ class Ticket(models.Model):
             if not (1 <= ticket_attr_value <= count_attrs):
                 raise error_to_raise(
                     {
-                        ticket_attr_name: f"{ticket_attr_name} "
-                                          f"number must be in available range: "
-                                          f"(1, {planetarium_dome_attr_name}): "
-                                          f"(1, {count_attrs})"
+                        ticket_attr_name:
+                            f"{ticket_attr_name} "
+                            f"number must be in available range: "
+                            f"(1, {planetarium_dome_attr_name}): "
+                            f"(1, {count_attrs})"
                     }
                 )
 
