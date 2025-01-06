@@ -8,6 +8,12 @@ services:
       - "5433:5432"
     volumes:
       - my_db:$PGDATA
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   planetarium:
     build:
@@ -17,14 +23,21 @@ services:
     ports:
       - "8001:8000"
     volumes:
-#      - ./:/app
+      - ./:/app
       - my_media:/files/media
     command: >
       sh -c "python manage.py wait_for_db &&
       python manage.py migrate &&
       python manage.py runserver 0.0.0.0:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 volumes:
   my_db:

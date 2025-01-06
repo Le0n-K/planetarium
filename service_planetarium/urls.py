@@ -1,4 +1,3 @@
-from django.urls import path, include
 from rest_framework import routers
 
 from service_planetarium.views import (
@@ -11,12 +10,12 @@ from service_planetarium.views import (
 )
 
 router = routers.DefaultRouter()
-router.register("show-themes", ShowThemeViewSet)
-router.register("planetarium-domes", PlanetariumDomeViewSet)
-router.register("astronomy-shows", AstronomyShowViewSet)
-router.register("show-sessions", ShowSessionViewSet)
-router.register("reservations", ReservationViewSet)
+router.register("showthemes", ShowThemeViewSet, basename="showtheme")
+router.register("planetariumdomes", PlanetariumDomeViewSet, basename="planetariumdome")
+router.register("astronomyshows", AstronomyShowViewSet, basename="astronomyshow")
+router.register("showsessions", ShowSessionViewSet, basename="showsession")
+router.register("reservations", ReservationViewSet, basename="reservation")
 
-urlpatterns = [path("", include(router.urls))]
+urlpatterns = router.urls
 
 app_name = "service_planetarium"

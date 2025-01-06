@@ -80,7 +80,7 @@ class AstronomyShowViewSet(
 
         if show_themes:
             show_themes_ids = self._params_to_ints(show_themes)
-            queryset = queryset.filter(genres__id__in=show_themes_ids)
+            queryset = queryset.filter(show_themes__id__in=show_themes_ids)
 
         return queryset.distinct()
 
@@ -107,11 +107,9 @@ class AstronomyShowViewSet(
         astronomy_show = self.get_object()
         serializer = self.get_serializer(astronomy_show, data=request.data)
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
         parameters=[

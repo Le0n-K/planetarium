@@ -14,6 +14,8 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "planetarium_app.settings")
+
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -84,7 +86,7 @@ WSGI_APPLICATION = "planetarium_app.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-if os.environ.get("DOCKER_CONTAINER", "False") == "True":
+if os.environ.get("DOCKER_CONTAINER", False):
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -155,7 +157,10 @@ REST_FRAMEWORK = {
         "rest_framework.throttling.AnonRateThrottle",
         "rest_framework.throttling.UserRateThrottle",
     ],
-    "DEFAULT_THROTTLE_RATES": {"anon": "10/day", "user": "30/day"},
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/day",
+        "user": "1000/day"
+    },
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),

@@ -31,13 +31,15 @@ def astronomy_show_image_file_path(instance, filename):
     _, extension = os.path.splitext(filename)
     filename = f"{slugify(instance.title)}-{uuid.uuid4()}{extension}"
 
-    return os.path.join("uploads/movies/", filename)
+    return os.path.join("uploads/astronomy-shows/", filename)
 
 
 class AstronomyShow(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
-    show_theme = models.ManyToManyField(ShowTheme, blank=True)
+    show_theme = models.ManyToManyField(
+        ShowTheme, blank=True, related_name="astronomy_shows"
+    )
     image = models.ImageField(
         null=True, upload_to=astronomy_show_image_file_path
     )
